@@ -1,0 +1,13 @@
+{% extends "myapps/basic.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+       <h3>Welcome {{user}}!!<br><br><p>To view your personalized To Do List click on <br><br>
+           View Your To Do List on the left side of the page</p></h3>
+        {% else %}
+            <h3>Please Login to view your personalized To Do Lists</h3>
+    {% endif %}
+
+{% endblock %}

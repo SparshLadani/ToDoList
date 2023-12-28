@@ -1,0 +1,96 @@
+{% extends "myapps/basic.html" %}
+{% block title %}To Do List{% endblock%}
+{% block content %}
+{% load crispy_forms_tags %}
+    <h2>{{list.name}}</h2>
+    <form method="post" action="#">
+        {% csrf_token %}
+            {% for item in list.item_set.all %}
+                {% if list.item_set.all|length == 0 %}
+                    <p>Add Items to your List</p>
+                {% endif %}
+                {% if item.completed == True %}
+                    <input type="checkbox" value="clicked" name="checked{{item.id}}" checked> {{item.text}}<br><br>
+                {% else %}
+                    <input type="checkbox" value="clicked" name="checked{{item.id}}" > {{item.text}}<br><br>
+                {% endif %}
+            {% endfor %}
+        <br>
+        <input type="text", name="New Input">
+        <p>
+        </p>
+        <br>
+        <button type="submit", name="save", value="save" class="btn btn-primary">Completed</button>
+        <p>
+        </p>
+        <button type="submit", name="newItem", value="newItem" class="btn btn-primary">Add Item</button>
+    </form>
+{% endblock %}
+{% block script %}
+    const body = document.querySelector('body');
+    const date = new Date();
+    const hour = date.getHours();
+
+    // Function to set background color and font color based on the time of day
+    function setColors(backgroundColor, fontColor) {
+        body.style.backgroundColor = backgroundColor;
+
+        // Set font color for all checkboxes in the form
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.style.color = fontColor;
+        });
+
+        // Set font color for all labels in the form
+        const labels = document.querySelectorAll('label');
+        labels.forEach(label => {
+            label.style.color = fontColor;
+        });
+
+        // Set font color for the input text field
+        const inputText = document.querySelector('input[type="text"]');
+        if (inputText) {
+            inputText.style.color = fontColor;
+        }
+    }
+
+    if (hour < 12) {
+        setColors('white', 'black');
+    } else if (hour < 18) {
+        setColors('lightgray', 'black');
+    } else {
+        setColors('gray', 'black');
+    }
+
+    let clickCount = 0;
+
+    // Check the local storage for click count and set it to 0 if not present
+    if (localStorage.getItem('clickCount') !== null) {
+        clickCount = parseInt(localStorage.getItem('clickCount'));
+    }
+
+    // Set initial sidebar state based on click count
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+
+    if (clickCount % 2 === 0) {
+        sidebar.style.left = '0';
+        content.style.marginLeft = '180px';
+    }
+
+    function toggleSidebar() {
+        clickCount++;
+        localStorage.setItem('clickCount', clickCount);
+
+        if (clickCount % 2 === 1) {
+            // Show the sidebar in the expanded state
+            sidebar.style.left = '0';
+            content.style.marginLeft = '180px';
+        } else {
+            // Hide the sidebar in the contracted state
+            sidebar.style.left = '-180px';
+            content.style.marginLeft = '0';
+        }
+    }
+{% endblock script %}
+

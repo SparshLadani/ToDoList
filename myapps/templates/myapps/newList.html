@@ -1,0 +1,73 @@
+{% extends 'myapps/basic.html' %}
+
+{% block title %}Create A New List{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h3>Create your new To Do List here!!</h3>
+        <p></p>
+        <form method="post" action="">
+            {{form.as_p}}
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+        {% else %}
+            <h3>Please Login to view your To Do Lists.<br><br>If your don't have an existing account than Register <a href="/register/">here</a></h3>
+    {% endif %}
+{% endblock content %}
+
+{% block script %}
+    const body = document.querySelector('body');
+    const date = new Date();
+    const hour = date.getHours();
+
+    // Function to set background color and font color based on the time of day
+    function setColors(backgroundColor, fontColor) {
+        body.style.backgroundColor = backgroundColor;
+
+        // Set font color for all labels in the form
+        const labels = document.querySelectorAll('label');
+        labels.forEach(label => {
+            label.style.color = fontColor;
+        });
+    }
+
+    if (hour < 12) {
+        setColors('white', 'black');
+    } else if (hour < 18) {
+        setColors('lightgray', 'black');
+    } else {
+        setColors('gray', 'black');
+    }
+
+    let clickCount = 0;
+
+    // Check the local storage for click count and set it to 0 if not present
+    if (localStorage.getItem('clickCount') !== null) {
+        clickCount = parseInt(localStorage.getItem('clickCount'));
+    }
+
+    // Set initial sidebar state based on click count
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+
+    if (clickCount % 2 === 0) {
+        sidebar.style.left = '0';
+        content.style.marginLeft = '180px';
+    }
+
+    function toggleSidebar() {
+        clickCount++;
+        localStorage.setItem('clickCount', clickCount);
+
+        if (clickCount % 2 === 1) {
+            // Show the sidebar in the expanded state
+            sidebar.style.left = '0';
+            content.style.marginLeft = '180px';
+        } else {
+            // Hide the sidebar in the contracted state
+            sidebar.style.left = '-180px';
+            content.style.marginLeft = '0';
+        }
+    }
+{% endblock script %}

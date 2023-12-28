@@ -1,0 +1,21 @@
+{% extends 'myapps/basic.html' %}
+{% block title %} View your Lists {% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if user.todolist.all|length == 0 %}
+            <h3>Create a To-Do List to view it here</h3>
+            <h3>Current Number of To-Do Lists: {{user.todolist.all|length}}</h3>
+        {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {% for tdl in user.todolist.all %}
+                    <p>
+                        <a href="/{{ tdl.id }}" style="display: inline-block; margin-right: 10px;">{{ tdl.name }}</a>
+                        <button type="submit" name="delete_list" value="{{ tdl.id }}" class="fas fa-trash delete-list" style="border: none; background-color: transparent;"></button>
+                    </p>
+                {% endfor %}
+            </form>
+    {% else %}
+        <h3>Please login to view your To-Do Lists.<br><br>If you don't have an existing account, register <a href="/register/">here</a></h3>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Basic{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyO8q6nUw7O/6Pf3Rf5S3fs1JWjizY" crossorigin="anonymous">
+    <!-- Bootstrap Icons CSS link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+      <style>
+      {% block css %}
+            body {
+          font-family: 'Arial', sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+
+        #sidebar {
+          height: 100%;
+          width: 180px;
+          position: fixed;
+          top: 0;
+          left: -180px; /* Initially hide the sidebar */
+          background-color: #333;
+          padding-top: 30px;
+          transition: 0.5s;
+        }
+
+        input {
+        max-width: 20em;
+        }
+
+        #sidebar a {
+          text-decoration: none;
+          margin-top: 35px;
+          padding: 15px;
+          font-size: 18px;
+          color: #fff;
+          display: block;
+          transition: 0.3s;
+        }
+
+        #sidebar a:hover {
+          background-color: #555;
+        }
+
+        #content {
+          margin-left: 80px;
+          padding: 50px;
+          transition: margin-left 0.5s;
+        }
+
+        #toggle-btn {
+          font-size: 20px;
+          cursor: pointer;
+          position: fixed;
+          top: 10px; /* Adjusted from left to top */
+          left: 10px;
+          color: #fff;
+          background-color: #333;
+          border: none;
+          padding: 5px;
+          z-index: 2; /* Ensures the button appears above other elements */
+          border-radius: 60px;
+        }
+    {% endblock %}
+  </style>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+</head>
+<body style="background-color: #282828;">
+{% block body %}
+    <button id="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <div id="sidebar">
+      <a href="/" onclick="toggleSidebar()">Home</a>
+      <a href="/login/" onclick="toggleSidebar()">Login</a>
+      <a href="/register/" onclick="toggleSidebar()">Register</a>
+      <a href="/createNewList/" onclick="toggleSidebar()">Create A New List</a>
+      <a href="/view/" onclick="toggleSidebar()">View Your To Do Lists</a>
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+{% endblock %}
+    <div id="content" name="content">
+        {% block content %}
+            This is the body section of this page.
+            <p><a href="{% url 'logout' %}">logout</a></p>
+        {% endblock %}
+    </div>
+    <script>
+    {% block script %}
+      let clickCount = 0;
+
+        const body = document.querySelector('body');
+        const date = new Date();
+        const hour = date.getHours();
+
+        if (hour < 12) {
+          body.style.backgroundColor = 'white';
+        } else if (hour < 18) {
+          body.style.backgroundColor = 'lightgray';
+        } else {
+          body.style.backgroundColor = 'gray';
+        }
+
+
+        // Check the local storage for click count and set it to 0 if not present
+        if (localStorage.getItem('clickCount') !== null) {
+            clickCount = parseInt(localStorage.getItem('clickCount'));
+        }
+
+        // Set initial sidebar state based on click count
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+
+        function toggleSidebar() {
+            clickCount++;
+            localStorage.setItem('clickCount', clickCount);
+
+            if (clickCount % 2 === 1) {
+                // Show the sidebar in the expanded state
+                sidebar.style.left = '0';
+                content.style.marginLeft = '180px';
+            } else {
+                // Hide the sidebar in the contracted state
+                sidebar.style.left = '-180px';
+                content.style.marginLeft = '0';
+            }
+        }
+       {% endblock %}
+    </script>
+</body>
+</html>

@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, request
 from .models import TheToDoList, Item
 from .forms import *
-from datetime import timezone
 
 def list(response, id):
     list = TheToDoList.objects.get(id=id)
@@ -49,10 +48,6 @@ def view(request):
                 list_to_delete.delete()
                 return HttpResponseRedirect("/")
             except TheToDoList.DoesNotExist:
-                # Handle the case where the list with the given ID doesn't exist
                 pass
-
-    # Your existing code for rendering the view goes here
-    # ...
 
     return render(request, "myapps/view.html", {})

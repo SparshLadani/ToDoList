@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapps.apps.MyappsConfig',
     'crispy_forms',
-    'crispy_bootstrap5',  # Forgetting this was probably your error
+    'crispy_bootstrap5',
     'register.apps.RegisterConfig',
 ]
 
